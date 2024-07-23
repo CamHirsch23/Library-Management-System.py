@@ -1,0 +1,80 @@
+# library_management_system.py
+
+import json
+import re
+
+# Utility functions
+def save_data_to_file(data, filename):
+    with open(filename, 'w') as file:
+        json.dump(data, file, indent=4)
+
+def load_data_from_file(filename):
+    try:
+        with open(filename, 'r') as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
+
+def validate_isbn(isbn):
+    pattern = r'^(?:ISBN(?:-1[03])?:? )?(?=\d{10}$|(?=(?:\d+-){4})\d{13}$|97[89]\d{10}$|(?=(?:\d+-){4})\d{17}$)97[89]?\d{1,5}[- ]?\d+[- ]?\d+[- ]?\d+[- ]?\d$'
+    return re.match(pattern, isbn) is not None
+
+# Model definitions
+class Book:
+    def __init__(self, title, author, isbn, publication_date, available=True):
+        self.title = title
+        self.author = author
+        self.isbn = isbn
+        self.publication_date = publication_date
+        self.available = available
+
+    def __str__(self):
+        return f"{self.title} by {self.author} (ISBN: {self.isbn})"
+
+# Book operations
+books = load_data_from_file('books.json')
+
+def add_book():
+    title = input("Enter the book title: ")
+    author = input("Enter the book author: ")
+    isbn = input("Enter the book ISBN: ")
+    if not validate_isbn(isbn):
+        print("Invalid ISBN format.")
+        return
+    publication_date = input("Enter the publication date: ")
+    new_book = Book(title, author, isbn, publication_date)
+    books.append(new_book.__dict__)
+    save_data_to_file(books, 'books.json')
+    print(f"Book '{new_book}' added successfully!")
+
+def book_menu():
+    print("Book Operations:")
+    print("1. Add a new book")
+    print("2. Quit")
+    choice = input("Enter your choice: ")
+    if choice == "1":
+        add_book()
+    elif choice == "2":
+        return
+    else:
+        print("Invalid choice. Please try again.")
+
+# Main menu
+def main_menu():
+    print("Welcome to the Library Management System!")
+    print("Main Menu:")
+    print("1. Book Operations")
+    print("2. Quit")
+
+    choice = input("Enter your choice: ")
+    if choice == "1":
+        book_menu()
+    elif choice == "2":
+        print("Thank you for using the Library Management System.")
+        exit()
+    else:
+        print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    while True:
+        main_menu()
