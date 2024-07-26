@@ -72,14 +72,70 @@ def add_book():
     save_data_to_file(books, 'books.json')
     print(f"Book '{new_book}' added successfully!")
 
+def borrow_book():
+    isbn = input("Enter the ISBN of the book to borrow: ")
+    for book in books:
+        if book['isbn'] == isbn:
+            if book['available']:
+                book['available'] = False
+                save_data_to_file(books, 'books.json')
+                print(f"You have borrowed '{book['title']}' successfully!")
+                return
+            else:
+                print("The book is currently not available.")
+                return
+    print("Book not found.")
+
+def return_book():
+    isbn = input("Enter the ISBN of the book to return: ")
+    for book in books:
+        if book['isbn'] == isbn:
+            if not book['available']:
+                book['available'] = True
+                save_data_to_file(books, 'books.json')
+                print(f"You have returned '{book['title']}' successfully!")
+                return
+            else:
+                print("The book was not borrowed.")
+                return
+    print("Book not found.")
+
+def search_books():
+    keyword = input("Enter a keyword to search for books: ")
+    found_books = [book for book in books if keyword.lower() in book['title'].lower() or keyword.lower() in book['author'].lower()]
+    if found_books:
+        for book in found_books:
+            print(f"{book['title']} by {book['author']} (ISBN: {book['isbn']})")
+    else:
+        print("No books found.")
+
+def display_books():
+    if books:
+        for book in books:
+            print(f"{book['title']} by {book['author']} (ISBN: {book['isbn']}, Available: {'Yes' if book['available'] else 'No'})")
+    else:
+        print("No books available.")
+
 def book_menu():
     print("Book Operations:")
     print("1. Add a new book")
-    print("2. Quit")
+    print("2. Borrow a book")
+    print("3. Return a book")
+    print("4. Search for books")
+    print("5. Display all books")
+    print("6. Quit")
     choice = input("Enter your choice: ")
     if choice == "1":
         add_book()
     elif choice == "2":
+        borrow_book()
+    elif choice == "3":
+        return_book()
+    elif choice == "4":
+        search_books()
+    elif choice == "5":
+        display_books()
+    elif choice == "6":
         return
     else:
         print("Invalid choice. Please try again.")
@@ -92,14 +148,36 @@ def add_genre():
     save_data_to_file(genres, 'genres.json')
     print(f"Genre '{new_genre}' added successfully!")
 
+def search_genres():
+    keyword = input("Enter a keyword to search for genres: ")
+    found_genres = [genre for genre in genres if keyword.lower() in genre['name'].lower()]
+    if found_genres:
+        for genre in found_genres:
+            print(genre['name'])
+    else:
+        print("No genres found.")
+
+def display_genres():
+    if genres:
+        for genre in genres:
+            print(genre['name'])
+    else:
+        print("No genres available.")
+
 def genre_menu():
     print("Genre Operations:")
     print("1. Add a new genre")
-    print("2. Quit")
+    print("2. Search for genres")
+    print("3. Display all genres")
+    print("4. Quit")
     choice = input("Enter your choice: ")
     if choice == "1":
         add_genre()
     elif choice == "2":
+        search_genres()
+    elif choice == "3":
+        display_genres()
+    elif choice == "4":
         return
     else:
         print("Invalid choice. Please try again.")
@@ -114,14 +192,36 @@ def add_user():
     save_data_to_file(users, 'users.json')
     print(f"User '{new_user}' added successfully!")
 
+def search_users():
+    keyword = input("Enter a keyword to search for users: ")
+    found_users = [user for user in users if keyword.lower() in user['name'].lower() or keyword.lower() in user['email'].lower()]
+    if found_users:
+        for user in found_users:
+            print(f"{user['name']} (ID: {user['user_id']}, Email: {user['email']})")
+    else:
+        print("No users found.")
+
+def display_users():
+    if users:
+        for user in users:
+            print(f"{user['name']} (ID: {user['user_id']}, Email: {user['email']})")
+    else:
+        print("No users available.")
+
 def user_menu():
     print("User Operations:")
     print("1. Add a new user")
-    print("2. Quit")
+    print("2. Search for users")
+    print("3. Display all users")
+    print("4. Quit")
     choice = input("Enter your choice: ")
     if choice == "1":
         add_user()
     elif choice == "2":
+        search_users()
+    elif choice == "3":
+        display_users()
+    elif choice == "4":
         return
     else:
         print("Invalid choice. Please try again.")
@@ -134,14 +234,36 @@ def add_author():
     save_data_to_file(authors, 'authors.json')
     print(f"Author '{new_author}' added successfully!")
 
+def search_authors():
+    keyword = input("Enter a keyword to search for authors: ")
+    found_authors = [author for author in authors if keyword.lower() in author['name'].lower()]
+    if found_authors:
+        for author in found_authors:
+            print(author['name'])
+    else:
+        print("No authors found.")
+
+def display_authors():
+    if authors:
+        for author in authors:
+            print(author['name'])
+    else:
+        print("No authors available.")
+
 def author_menu():
     print("Author Operations:")
     print("1. Add a new author")
-    print("2. Quit")
+    print("2. Search for authors")
+    print("3. Display all authors")
+    print("4. Quit")
     choice = input("Enter your choice: ")
     if choice == "1":
         add_author()
     elif choice == "2":
+        search_authors()
+    elif choice == "3":
+        display_authors()
+    elif choice == "4":
         return
     else:
         print("Invalid choice. Please try again.")
@@ -150,27 +272,3 @@ def author_menu():
 def main_menu():
     print("Welcome to the Library Management System!")
     print("Main Menu:")
-    print("1. Book Operations")
-    print("2. Genre Operations")
-    print("3. User Operations")
-    print("4. Author Operations")
-    print("5. Quit")
-
-    choice = input("Enter your choice: ")
-    if choice == "1":
-        book_menu()
-    elif choice == "2":
-        genre_menu()
-    elif choice == "3":
-        user_menu()
-    elif choice == "4":
-        author_menu()
-    elif choice == "5":
-        print("Thank you for using the Library Management System.")
-        exit()
-    else:
-        print("Invalid choice. Please try again.")
-
-if __name__ == "__main__":
-    while True:
-        main_menu()
